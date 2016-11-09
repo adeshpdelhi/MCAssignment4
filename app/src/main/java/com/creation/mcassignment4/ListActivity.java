@@ -27,6 +27,7 @@ import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
 
+    private String EXTRA_TASK_ID = "TASK_ID";
     private static final String TAG = "ListActivity";
     private TaskDbHelper mTaskDbHelper;
     private RecyclerView mListRecyclerView;
@@ -105,20 +106,35 @@ public class ListActivity extends AppCompatActivity {
         mTaskAdapter.notifyDataSetChanged();
     }
 
-    private class TaskViewHolder extends RecyclerView.ViewHolder{
+    private class TaskViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
         TextView mTitleView;
+        private String ID;
         public TaskViewHolder(View itemView){
             super(itemView);
             mTitleView = (TextView) itemView.findViewById(R.id.list_title);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v){
+            Intent i = new Intent(getApplication(), ViewSlideActivity.class);
+            i.putExtra(EXTRA_TASK_ID, ID);
+            Log.v(TAG, "clickeddd!!!");
+            startActivity(i);
         }
 
         void setTitle(String title){
             mTitleView.setText(title);
         }
+
+        void setId(String id){
+            ID = id;
+        }
     }
 
     private class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder>{
         private ArrayList<Task> mTasks;
+
         public TaskAdapter(ArrayList<Task> tasks){
             mTasks = tasks;
         }
@@ -133,6 +149,7 @@ public class ListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(TaskViewHolder holder, int position) {
             holder.setTitle(mTasks.get(position).getTitle());
+            holder.setId(mTasks.get(position).getId());
         }
 
         @Override
